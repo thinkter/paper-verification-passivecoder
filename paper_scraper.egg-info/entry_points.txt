@@ -1,0 +1,2 @@
+[console_scripts]
+paper-audit = paper_audit.cli:main

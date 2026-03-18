@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ExamCooker OCR Audit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">ExamCooker Audit</p>
+        <h1>Catch question papers that were uploaded under the wrong title.</h1>
+        <p class="lede">
+          The scanner downloads each paper, OCRs the first few pages to find the title page,
+          compares the extracted title with the ExamCooker label, and lists only the suspicious uploads.
+        </p>
+        <div class="hero-actions">
+          <button id="scan-button" class="primary-button">Run Full Scan</button>
+          <span id="scan-message" class="scan-message">Ready.</span>
+        </div>
+      </section>
+
+      <section class="stats-panel">
+        <div class="stat-card">
+          <span class="stat-label">Checked</span>
+          <strong id="stat-checked">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Invalid</span>
+          <strong id="stat-invalid">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Pages Searched</span>
+          <strong id="stat-pages">0</strong>
+        </div>
+      </section>
+
+      <section class="results-panel">
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Suspicious Papers</p>
+            <h2>Review mismatches</h2>
+          </div>
+          <p id="generated-at" class="generated-at">No results yet.</p>
+        </div>
+        <div id="results-container" class="results-grid"></div>
+        <template id="paper-card-template">
+          <article class="paper-card">
+            <div class="card-topline">
+              <span class="badge badge-danger">Mismatch</span>
+              <span class="score-chip"></span>
+            </div>
+            <h3 class="paper-title"></h3>
+            <p class="paper-meta"></p>
+            <div class="compare-block">
+              <div>
+                <span class="block-label">Website label</span>
+                <p class="listed-title"></p>
+              </div>
+              <div>
+                <span class="block-label">OCR title</span>
+                <p class="ocr-title"></p>
+              </div>
+            </div>
+            <p class="reason"></p>
+            <p class="excerpt"></p>
+            <div class="link-row">
+              <a class="paper-link" target="_blank" rel="noreferrer">Open on ExamCooker</a>
+              <a class="pdf-link" target="_blank" rel="noreferrer">Open PDF</a>
+            </div>
+          </article>
+        </template>
+      </section>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+  </html>

@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+paper_audit/__init__.py
+paper_audit/analyzer.py
+paper_audit/cli.py
+paper_audit/models.py
+paper_audit/ocr.py
+paper_audit/scraper.py
+paper_audit/service.py
+paper_audit/settings.py
+paper_audit/utils.py
+paper_scraper.egg-info/PKG-INFO
+paper_scraper.egg-info/SOURCES.txt
+paper_scraper.egg-info/dependency_links.txt
+paper_scraper.egg-info/entry_points.txt
+paper_scraper.egg-info/requires.txt
+paper_scraper.egg-info/top_level.txt
