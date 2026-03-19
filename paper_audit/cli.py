@@ -10,7 +10,7 @@ from .settings import load_settings
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Audit ExamCooker papers with OCR.")
+    parser = argparse.ArgumentParser(description="Audit ExamCooker papers with Gemini first-page verification.")
     parser.add_argument("--limit", type=int, default=None, help="Only scan the first N papers.")
     parser.add_argument(
         "--json",

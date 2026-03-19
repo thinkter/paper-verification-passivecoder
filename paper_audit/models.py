@@ -25,20 +25,6 @@ class PaperDetail:
 
 
 @dataclass(slots=True)
-class OcrResult:
-    page_index: int
-    candidate_title: str
-    page_text: str
-    title_score: float
-    page_title_score: float
-    token_score: float
-    code_found: bool
-    code_score: float
-    exam_type_found: bool
-    overall_score: float
-
-
-@dataclass(slots=True)
 class InvalidPaper:
     paper_id: str
     subject_title: str
@@ -49,9 +35,9 @@ class InvalidPaper:
     website_url: str
     pdf_url: str
     listed_title: str
-    ocr_title: str
+    detected_title: str
     match_score: float
-    ocr_page: int
+    checked_page: int
     reason: str
     page_excerpt: str
     cache_path: str

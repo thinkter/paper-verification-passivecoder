@@ -38,9 +38,9 @@ function renderResults(results) {
     const node = template.content.cloneNode(true);
     node.querySelector(".score-chip").textContent = `score ${paper.match_score}`;
     node.querySelector(".paper-title").textContent = `${paper.subject_title} (${paper.course_code})`;
-    node.querySelector(".paper-meta").textContent = `${paper.exam_type} | Slot ${paper.slot} | ${paper.year} | OCR page ${paper.ocr_page}`;
+    node.querySelector(".paper-meta").textContent = `${paper.exam_type} | Slot ${paper.slot} | ${paper.year} | Page ${paper.checked_page}`;
     node.querySelector(".listed-title").textContent = paper.listed_title;
-    node.querySelector(".ocr-title").textContent = paper.ocr_title;
+    node.querySelector(".ocr-title").textContent = paper.detected_title;
     node.querySelector(".reason").textContent = paper.reason;
     node.querySelector(".excerpt").textContent = paper.page_excerpt;
 

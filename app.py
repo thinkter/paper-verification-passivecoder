@@ -43,7 +43,7 @@ settings, paths = load_settings(ROOT)
 service = AuditService(settings=settings, paths=paths, scraper=ExamCookerScraper(settings))
 scan_state = ScanState()
 
-app = FastAPI(title="ExamCooker OCR Audit")
+app = FastAPI(title="ExamCooker Gemini Audit")
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 templates = Jinja2Templates(directory=str(ROOT / "templates"))
 

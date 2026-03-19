@@ -1,1 +1,1 @@
-"""ExamCooker OCR audit package."""
+"""ExamCooker Gemini audit package."""

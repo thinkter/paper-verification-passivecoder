@@ -5,19 +5,12 @@ from pathlib import Path
 from threading import Lock
 from typing import Callable
 
-from .analyzer import (
-    build_expected_title,
-    build_invalid_reason,
-    excerpt_text,
-    is_valid_match,
-    listed_title,
-    score_page_text,
-)
+from .analyzer import listed_title
 from .models import InvalidPaper, PaperListing, ScanResult, ScanSummary, utc_now
-from .ocr import extract_page_texts
 from .scraper import ExamCookerScraper
 from .settings import AuditSettings
 from .utils import read_json, slugify, write_json
+from .verifier import GeminiPaperVerifier
 
 
 class AuditService:
@@ -25,6 +18,7 @@ class AuditService:
         self.settings = settings
         self.paths = paths
         self.scraper = scraper or ExamCookerScraper(settings)
+        self.verifier = GeminiPaperVerifier(settings)
 
     def load_latest_results(self) -> dict | None:
         return read_json(self.paths.latest_result_path)
@@ -45,32 +39,10 @@ class AuditService:
     def _inspect_paper(self, paper: PaperListing) -> InvalidPaper | None:
         detail = self.scraper.fetch_paper_detail(paper)
         pdf_bytes, cache_path = self._load_pdf_bytes(paper, detail.file_url)
-        page_texts = extract_page_texts(
-            pdf_bytes,
-            max_pages=self.settings.max_title_pages,
-            dpi=self.settings.render_dpi,
-            lang=self.settings.tesseract_lang,
-        )
+        decision = self.verifier.verify_first_page(pdf_bytes, paper)
 
-        if not page_texts:
-            best_result = score_page_text(0, "", paper)
-        else:
-            scored_pages = [
-                score_page_text(page_index=page_index, page_text=page_text, listing=paper)
-                for page_index, page_text in enumerate(page_texts)
-            ]
-            valid_pages = [
-                result
-                for result in scored_pages
-                if is_valid_match(
-                    result,
-                    threshold=self.settings.title_match_threshold,
-                    partial_threshold=self.settings.title_partial_threshold,
-                )
-            ]
-            if valid_pages:
-                return None
-            best_result = max(scored_pages, key=lambda result: result.overall_score)
+        if decision.matches_metadata:
+            return None
 
         return InvalidPaper(
             paper_id=paper.paper_id,
@@ -82,11 +54,11 @@ class AuditService:
             website_url=paper.website_url,
             pdf_url=detail.file_url,
             listed_title=listed_title(paper),
-            ocr_title=best_result.candidate_title or "No reliable title extracted",
-            match_score=round(best_result.overall_score, 3),
-            ocr_page=best_result.page_index + 1,
-            reason=build_invalid_reason(best_result),
-            page_excerpt=excerpt_text(best_result.page_text),
+            detected_title=decision.extracted_title or "No reliable title extracted",
+            match_score=round(decision.confidence, 3),
+            checked_page=decision.checked_page,
+            reason=decision.mismatch_reason or "The first page does not match the website metadata.",
+            page_excerpt=decision.page_excerpt or decision.page_summary,
             cache_path=str(cache_path),
         )
 
@@ -101,9 +73,9 @@ class AuditService:
             website_url=paper.website_url,
             pdf_url="",
             listed_title=listed_title(paper),
-            ocr_title="No OCR result",
+            detected_title="No model result",
             match_score=0.0,
-            ocr_page=0,
+            checked_page=0,
             reason=f"Failed to inspect the paper: {error}",
             page_excerpt="",
             cache_path="",
@@ -117,6 +89,7 @@ class AuditService:
         progress = progress or (lambda _event: None)
 
         started_at = utc_now()
+        self.verifier.ensure_ready()
         listings, total_listing_pages = self.scraper.fetch_all_listings(
             limit=limit,
             progress=lambda message: progress({"stage": "listing", "message": message})

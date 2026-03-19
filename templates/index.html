@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ExamCooker OCR Audit</title>
+    <title>ExamCooker Gemini Audit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,8 +18,8 @@
         <p class="eyebrow">ExamCooker Audit</p>
         <h1>Catch question papers that were uploaded under the wrong title.</h1>
         <p class="lede">
-          The scanner downloads each paper, OCRs the first few pages to find the title page,
-          compares the extracted title with the ExamCooker label, and lists only the suspicious uploads.
+          The scanner downloads each paper, sends the first page to Gemini,
+          compares the extracted paper details with the ExamCooker metadata, and lists only the suspicious uploads.
         </p>
         <div class="hero-actions">
           <button id="scan-button" class="primary-button">Run Full Scan</button>
@@ -65,7 +65,7 @@
                 <p class="listed-title"></p>
               </div>
               <div>
-                <span class="block-label">OCR title</span>
+                <span class="block-label">Detected title</span>
                 <p class="ocr-title"></p>
               </div>
             </div>

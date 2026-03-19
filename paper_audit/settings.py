@@ -13,11 +13,10 @@ class AuditSettings:
     request_timeout: float = 30.0
     max_listing_workers: int = 4
     max_paper_workers: int = 3
-    max_title_pages: int = 4
-    render_dpi: int = 300
-    tesseract_lang: str = "eng"
-    title_match_threshold: float = 0.72
-    title_partial_threshold: float = 0.54
+    max_title_pages: int = 1
+    render_dpi: int = 220
+    gemini_model: str = "gemini-3-pro-preview"
+    gemini_api_version: str = "v1alpha"
 
 
 def load_settings(root: Path | None = None) -> tuple[AuditSettings, ScanPaths]:
